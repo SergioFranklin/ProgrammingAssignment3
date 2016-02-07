@@ -35,8 +35,6 @@ merged_alldata <- rbind(merged_test, merged_train)
 ## Extracting only the measurements on the mean and standard deviation for each measurement.
 ##
 
-mean_std_measurements <- merged_alldata[, 1:8]
-
 features <- read.table("./Project/UCI HAR Dataset/features.txt", sep="")
 grep("mean()", features$V2)
 grep("std()", features$V2)
