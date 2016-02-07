@@ -81,4 +81,6 @@ Xmean_std_meas <- arrange (Xmean_std_meas, subject.num, activity.name)
 grouped_dset <- group_by(Xmean_std_meas, subject.num, activity.name)
 tidy_dset <- summarize_each (grouped_dset, funs(mean))
 
+setwd(wd_corrente)
+
 write.table(tidy_dset, file = "./Project/tidy_dset.txt", row.name=FALSE)
