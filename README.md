@@ -1,73 +1,18 @@
 # ProgrammingAssignment3
 Getting and cleanning data course project
 
-==================================================================
-Human Activity Recognition Using Smartphones Dataset
-Version 1.0
-==================================================================
-Jorge L. Reyes-Ortiz, Davide Anguita, Alessandro Ghio, Luca Oneto.
-Smartlab - Non Linear Complex Systems Laboratory
-DITEN - Università degli Studi di Genova.
-Via Opera Pia 11A, I-16145, Genoa, Italy.
-activityrecognition@smartlab.ws
-www.smartlab.ws
-==================================================================
+The script works in the following way.
 
-The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. 
+First, the script saves the current working directory and creates a new one for saving the works of that Programming Assignment. At the end of the script, the initial working directory is set back. 
 
-The sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and then sampled in fixed-width sliding windows of 2.56 sec and 50% overlap (128 readings/window). The sensor acceleration signal, which has gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. The gravitational force is assumed to have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency was used. From each window, a vector of features was obtained by calculating variables from the time and frequency domain. See 'features_info.txt' for more details. 
+The project data is downloaded and saved, the data files are read to a number of data frames, and after performing some inspections (e.g., using the str() function), the training and test sets are merged to create one single data set called 'merged_alldata'.
 
-For each record it is provided:
-======================================
+The variable names of the 'merged_alldata' data frame is read from the 'features.txt' file. The variable names with the character strings "mean()" or "std()" were identified using the grep() function. Then, a new data frame is created containing  only the values of mean and standard deviation for each observation. This new data frame is called 'mean_std_meas'. Note that the first two columns of that data frame contains the subject id and the activity name of each observation.
 
-- Triaxial acceleration from the accelerometer (total acceleration) and the estimated body acceleration.
-- Triaxial Angular velocity from the gyroscope. 
-- A 561-feature vector with time and frequency domain variables. 
-- Its activity label. 
-- An identifier of the subject who carried out the experiment.
+The activity names are read from the 'activity_labels.txt' file, which is a look‐up table linking IDs with unique activity names (i.e., a vector with activity names ordered according to IDs). Then, the "activity IDs" contained in the column V1.1 of the 'mean_std_meas' data frame is replaced by the corresponding "activity names" by indexing the abovementioned look-up table. 
 
-The dataset includes the following files:
-=========================================
+The column names of the 'mean_std_meas' is labeled with appropriate variable names: The first two variables is labeled as "subject.num" and "activity.name"; The other variables names are changed using the sub() function to avoid especial characters like ‐, and replace the first occurrences of the prefix "t" and "f" by the strings "time" and "frequency", respectively.
 
-- 'README.txt'
+The 'mean_std_meas' data frame is copied to a new data frane called 'Xmean_std_meas'. It is important to realize that for each variable (column) in the 'mean_std_meas' data frame, there are several observations for the same subject‐activity pair. A tidy data set should have "one observation per row and one variable per column". Thus, the variable names "Xmean_std_meas$subject.num" and "Xmean_std_meas$activity.name" are converted to factors, the rows of the 'Xmean_std_meas' data frame are reordered (while preserving corresponding order of other columns) using the arrange() function (of the dplyr package), and a new data frame is created by grouping the 'Xmean_std_meas' data frame according to the "subject.num" and "activity.name" variable names using the group_by() function (of the dplyr package). This new data frame is called grouped_dset. 
 
-- 'features_info.txt': Shows information about the variables used on the feature vector.
-
-- 'features.txt': List of all features.
-
-- 'activity_labels.txt': Links the class labels with their activity name.
-
-- 'train/X_train.txt': Training set.
-
-- 'train/y_train.txt': Training labels.
-
-- 'test/X_test.txt': Test set.
-
-- 'test/y_test.txt': Test labels.
-
-The following files are available for the train and test data. Their descriptions are equivalent. 
-
-- 'train/subject_train.txt': Each row identifies the subject who performed the activity for each window sample. Its range is from 1 to 30. 
-
-- 'train/Inertial Signals/total_acc_x_train.txt': The acceleration signal from the smartphone accelerometer X axis in standard gravity units 'g'. Every row shows a 128 element vector. The same description applies for the 'total_acc_x_train.txt' and 'total_acc_z_train.txt' files for the Y and Z axis. 
-
-- 'train/Inertial Signals/body_acc_x_train.txt': The body acceleration signal obtained by subtracting the gravity from the total acceleration. 
-
-- 'train/Inertial Signals/body_gyro_x_train.txt': The angular velocity vector measured by the gyroscope for each window sample. The units are radians/second. 
-
-Notes: 
-======
-- Features are normalized and bounded within [-1,1].
-- Each feature vector is a row on the text file.
-
-For more information about this dataset contact: activityrecognition@smartlab.ws
-
-License:
-========
-Use of this dataset in publications must be acknowledged by referencing the following publication [1] 
-
-[1] Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
-
-This dataset is distributed AS-IS and no responsibility implied or explicit can be addressed to the authors or their institutions for its use or misuse. Any commercial use is prohibited.
-
-Jorge L. Reyes-Ortiz, Alessandro Ghio, Luca Oneto, Davide Anguita. November 2012.
+Last, a new data frame is created using the summarize_each() function (of the dplyr package) to average the columns by group to end with only one observation (the mean in this case) for each subject‐activity pair (30 subjects * 6 activities = 180 observations in total). This new data frame is called 'tidy_dset'.
